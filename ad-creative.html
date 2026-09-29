@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Armagh Campaign Ads</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    body { background: var(--surface-soft); }
+    .page { padding: 48px 0 96px; }
+    .page .wrap { max-width: 1100px; }
+    .intro { max-width: 720px; margin-bottom: 40px; }
+    .intro p { color: var(--charcoal); margin-top: 8px; }
+    .ads { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px; align-items: start; }
+    .ad-block h2 { font-size: 18px; font-weight: 700; margin-bottom: 4px; letter-spacing: 0; }
+    .ad-block > p { font-size: 14px; color: var(--steel); margin-bottom: 14px; }
+    .ad-block code { background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 12px; word-break: break-all; }
+
+    /* 1080 x 1080 social creative, shown scaled */
+    .creative { aspect-ratio: 1 / 1; border-radius: var(--r-xl); overflow: hidden; background: #fff; position: relative; box-shadow: var(--shadow-2); }
+    .creative img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .creative .top { position: absolute; top: 0; left: 0; right: 0; padding: 6%; display: flex; justify-content: space-between; align-items: center; }
+    .creative .top img { position: static; width: 22%; height: auto; border-radius: 6px; }
+    .creative .price-tag { background: var(--ink-deep); color: #fff; border-radius: 100px; padding: 8px 16px; font-weight: 700; font-size: 15px; }
+    .creative .bottom { position: absolute; left: 0; right: 0; bottom: 0; padding: 6%; background: linear-gradient(0deg, rgba(10,19,23,.85), rgba(10,19,23,0)); color: #fff; }
+    .creative .bottom strong { font-size: 20px; font-weight: 500; line-height: 1.2; display: block; }
+    .creative .bottom span { font-size: 14px; opacity: .9; }
+
+    .post { background: #fff; border-radius: var(--r-xl); overflow: hidden; box-shadow: var(--shadow-2); }
+    .post .head { display: flex; gap: 10px; align-items: center; padding: 12px 14px; font-size: 14px; }
+    .post .head img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
+    .post .head span { display: block; font-size: 12px; color: var(--steel); }
+    .post .copy { padding: 0 14px 12px; font-size: 14px; }
+    .post .creative { border-radius: 0; box-shadow: none; }
+    .post .cta { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; background: var(--surface-soft); font-size: 13px; }
+    .post .cta strong { display: block; font-size: 14px; }
+    .post .cta .btn { padding: 8px 16px; font-size: 13px; background: #e4e6eb; color: var(--ink); }
+
+    .serp { background: #fff; border-radius: var(--r-xl); padding: 20px; box-shadow: var(--shadow-2); font-family: Arial, sans-serif; letter-spacing: 0; }
+    .serp .sp { font-size: 12px; font-weight: 700; color: var(--ink); }
+    .serp .url { font-size: 13px; color: #202124; margin: 2px 0 4px; }
+    .serp .title { font-size: 20px; color: #1a0dab; line-height: 1.3; }
+    .serp .desc { font-size: 14px; color: #4d5156; margin-top: 4px; line-height: 1.5; }
+    .serp .ext { display: flex; gap: 16px; margin-top: 8px; font-size: 14px; color: #1a0dab; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+<!-- Companion ads for the ottoman-offer.html landing page. They exist so the landing page can match
+     the ad on product, message and visuals (textbook: Landing Pages). Each links with UTM tags so the
+     landing page swaps its intro line to echo the ad, and analytics can attribute the lead. -->
+<main class="page">
+  <div class="wrap">
+    <div class="intro">
+      <h1 class="heading-lg">Armagh Ottoman campaign</h1>
+      <p>Three ads, one landing page. Each ad uses the same product photo, price and wording as <a href="ottoman-offer.html" style="color:var(--primary);font-weight:700">the landing page</a>, and its link carries UTM tags so the page can echo that ad's message.</p>
+    </div>
+
+    <div class="ads">
+      <section class="ad-block">
+        <h2>Facebook / Instagram feed</h2>
+        <p>Message: storage. Link: <code>ottoman-offer.html?utm_source=facebook&amp;utm_medium=paid_social&amp;utm_campaign=armagh&amp;utm_content=storage</code></p>
+        <div class="post">
+          <div class="head"><img src="https://www.discountbedsbelfast.co.uk/s/cc_images/cache_2491463061.jpg" alt=""><div><strong>Discount Beds Belfast</strong><span>Sponsored</span></div></div>
+          <p class="copy">Storage under the whole bed. The Armagh Ottoman lifts up for bedding, cases and clutter. Try it at our Belfast showroom, or reserve online in 20 seconds.</p>
+          <div class="creative">
+            <img src="https://www.discountbedsbelfast.co.uk/s/cc_images/teaserbox_2495040385.jpg" alt="Armagh ottoman storage bed">
+            <div class="top"><img src="https://www.discountbedsbelfast.co.uk/s/cc_images/cache_2491463061.jpg" alt="Discount Beds Belfast"><span class="price-tag">From £479</span></div>
+            <div class="bottom"><strong>The Armagh Ottoman Storage Bed</strong><span>Free local delivery when in stock</span></div>
+          </div>
+          <div class="cta"><div><span>discountbedsbelfast.co.uk</span><strong>Armagh Ottoman from £479</strong></div><span class="btn">Learn more</span></div>
+        </div>
+      </section>
+
+      <section class="ad-block">
+        <h2>Instagram story / square</h2>
+        <p>Message: price. Link: <code>ottoman-offer.html?utm_source=instagram&amp;utm_medium=paid_social&amp;utm_campaign=armagh&amp;utm_content=price</code></p>
+        <div class="creative">
+          <img src="https://www.discountbedsbelfast.co.uk/s/cc_images/teaserbox_2495040971.jpg" alt="Armagh ottoman storage bed">
+          <div class="top"><img src="https://www.discountbedsbelfast.co.uk/s/cc_images/cache_2491463061.jpg" alt="Discount Beds Belfast"><span class="price-tag">Double £479</span></div>
+          <div class="bottom"><strong>Our best-selling ottoman, from £479.</strong><span>Reserve online. Nothing to pay until we call.</span></div>
+        </div>
+      </section>
+
+      <section class="ad-block">
+        <h2>Google search ad</h2>
+        <p>Message: showroom. Keywords such as "ottoman bed belfast". Link: <code>ottoman-offer.html?utm_source=google&amp;utm_medium=cpc&amp;utm_campaign=armagh&amp;utm_content=showroom</code></p>
+        <div class="serp">
+          <div class="sp">Sponsored</div>
+          <div class="url">discountbedsbelfast.co.uk &rsaquo; ottoman-beds</div>
+          <div class="title">Armagh Ottoman Bed from £479 | Try It In Our Belfast Showroom</div>
+          <div class="desc">Storage under the whole bed. Double £479, kingsize £529. NBF approved mattresses. Free local delivery on stock items. Reserve online in 20 seconds.</div>
+          <div class="ext"><span>Call 028 9045 3723</span><span>8 Templemore Avenue, Belfast</span><span>Open Mon to Sat 10am to 5pm</span></div>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+</body>
+</html>
