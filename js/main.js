@@ -171,77 +171,63 @@
     reviewsEl.hidden = false;
   }
 
-  /* ---------- Real showroom media (config.js) replaces the stock photo when supplied ---------- */
+  /* ---------- Showroom video (config.js): replaces the photo slot when a video URL is supplied ---------- */
   var media = $("#why-media");
   var sr = CFG.showroom || {};
-  if (media && (sr.video || sr.photo)) {
-    var first = media.querySelector("img");
-    if (sr.video) {
-      var f = document.createElement("iframe");
-      f.src = sr.video; f.title = "Walk around the Discount Beds Belfast showroom"; f.loading = "lazy";
-      f.allow = "accelerometer; encrypted-media; picture-in-picture"; f.allowFullscreen = true;
-      f.style.cssText = "width:100%;aspect-ratio:4/5;border:0;border-radius:24px;display:block";
-      first.replaceWith(f);
-    } else { first.src = sr.photo; first.alt = "Inside the Discount Beds Belfast showroom"; }
+  if (media && sr.video) {
+    var first = media.querySelector("img, .slot");
+    var f = document.createElement("iframe");
+    f.src = sr.video; f.title = "Walk around the Discount Beds Belfast showroom"; f.loading = "lazy";
+    f.allow = "accelerometer; encrypted-media; picture-in-picture"; f.allowFullscreen = true;
+    f.style.cssText = "width:100%;aspect-ratio:4/5;border:0;border-radius:24px;display:block";
+    if (first) first.replaceWith(f);
   }
 
-  /* ---------- Product grid ---------- */
+  /* ---------- Product grid (cards are pre-rendered in the HTML; this only filters, searches and sorts) ---------- */
   var grid = $("#products");
   var PAGE_SIZE = 8;
-  var shop = { cat: "all", q: "", sort: "popular", expanded: false };
-  var catLabel = window.CATEGORIES || {};
-
-  function money(n) { return "£" + n.toLocaleString("en-GB"); }
+  var PLURAL = { all: "products", mattress: "mattresses", ottoman: "ottoman beds", divan: "divan beds", upholstered: "upholstered beds", bunk: "bunk and kids beds", sofa: "sofas and sofa beds" };
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
 
-  function card(p) {
-    var href = p.link || "#callback";
-    var attrs = p.link ? "" : ' data-product="' + esc(p.name) + '"';
-    var badge = p.was ? '<span class="badge badge-promo">Save ' + money(p.was - p.price) + "</span>" : (p.rank <= 3 ? '<span class="badge badge-ink">Best seller</span>' : "");
-    return '<article class="product">' +
-      '<a class="product-thumb" href="' + href + '"' + attrs + ' tabindex="-1" aria-hidden="true">' + badge + '<img src="' + p.img + '" alt="" loading="lazy"></a>' +
-      '<div class="product-info"><span class="product-cat">' + esc(catLabel[p.cat] || "") + '</span>' +
-      '<h3><a href="' + href + '"' + attrs + ">" + esc(p.name) + "</a></h3>" +
-      '<p class="product-price">From <b>' + money(p.price) + "</b>" + (p.was ? "<s>" + money(p.was) + "</s>" : "") + "</p>" +
-      '<p class="product-meta">' + esc(p.detail || "") + "</p></div>" +
-      '<a class="btn btn-ghost" href="' + href + '"' + attrs + ">" + (p.link ? "View offer" : "Check availability") + "</a>" +
-      "</article>";
-  }
-
-  function renderShop() {
-    if (!grid || !window.PRODUCTS) return;
-    var q = shop.q.trim().toLowerCase();
-    var list = window.PRODUCTS.filter(function (p) {
-      return (shop.cat === "all" || p.cat === shop.cat) &&
-        (!q || (p.name + " " + (catLabel[p.cat] || "") + " " + (p.detail || "")).toLowerCase().indexOf(q) > -1);
-    }).sort(function (a, b) {
-      if (shop.sort === "price-asc") return a.price - b.price;
-      if (shop.sort === "price-desc") return b.price - a.price;
-      return a.rank - b.rank;
-    });
-    var shown = shop.expanded ? list : list.slice(0, PAGE_SIZE);
-    grid.innerHTML = shown.map(card).join("");
-    grid.hidden = list.length === 0;
-    $("#empty").classList.toggle("show", list.length === 0);
-    var plural = { all: "products", mattress: "mattresses", ottoman: "ottoman beds", divan: "divan beds", upholstered: "upholstered beds", bunk: "bunk and kids beds", sofa: "sofas and sofa beds" };
-    $("#result-count").textContent = list.length ? "Showing " + shown.length + " of " + list.length + " " + plural[shop.cat] : "";
-    var more = $("#show-more");
-    more.hidden = list.length <= shown.length;
-    more.textContent = "Show all " + list.length;
-  }
-
-  function setCat(cat) {
-    shop.cat = cat; shop.expanded = false;
-    $$(".filters .pill-tab").forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-cat") === cat)); });
-    renderShop();
-  }
-
   if (grid) {
+    var cards = $$(".product", grid);
+    var shop = { cat: "all", q: "", sort: "popular", expanded: false };
+    cards.forEach(function (c) { c._text = (c.getAttribute("data-name") + " " + c.textContent).toLowerCase(); });
+
+    var renderShop = function () {
+      var q = shop.q.trim().toLowerCase();
+      var list = cards.filter(function (c) {
+        return (shop.cat === "all" || c.getAttribute("data-cat") === shop.cat) && (!q || c._text.indexOf(q) > -1);
+      });
+      list.sort(function (a, b) {
+        var pa = +a.getAttribute("data-price"), pb = +b.getAttribute("data-price");
+        if (shop.sort === "price-asc") return pa - pb;
+        if (shop.sort === "price-desc") return pb - pa;
+        return +a.getAttribute("data-rank") - +b.getAttribute("data-rank");
+      });
+      cards.forEach(function (c) { c.hidden = true; });
+      list.forEach(function (c, i) { grid.appendChild(c); c.hidden = !(shop.expanded || i < PAGE_SIZE); });
+      var shown = shop.expanded ? list.length : Math.min(list.length, PAGE_SIZE);
+      grid.hidden = list.length === 0;
+      $("#empty").classList.toggle("show", list.length === 0);
+      $("#result-count").textContent = list.length ? "Showing " + shown + " of " + list.length + " " + PLURAL[shop.cat] : "";
+      var more = $("#show-more");
+      more.hidden = list.length <= shown;
+      more.textContent = "Show all " + list.length;
+    };
+
+    var setCat = function (cat) {
+      if (!PLURAL[cat]) cat = "all";
+      shop.cat = cat; shop.expanded = false;
+      $$(".filters .pill-tab").forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-cat") === cat)); });
+      renderShop();
+    };
+
     $$(".filters .pill-tab").forEach(function (b) { b.addEventListener("click", function () { setCat(b.getAttribute("data-cat")); }); });
     $("#search").addEventListener("input", function (e) { shop.q = e.target.value; shop.expanded = false; renderShop(); });
     $("#sort").addEventListener("change", function (e) { shop.sort = e.target.value; renderShop(); });
     $("#show-more").addEventListener("click", function () { shop.expanded = true; renderShop(); track("show_all_products", { cat: shop.cat }); });
-    // Every nav pill, category card and footer link filters in-page, so they all behave the same way.
+    // Category photo cards filter in-page.
     $$("a[data-filter]").forEach(function (a) {
       a.addEventListener("click", function () {
         shop.q = ""; $("#search").value = "";
@@ -249,8 +235,8 @@
         track("category_click", { cat: a.getAttribute("data-filter") });
       });
     });
-    var catParam = params.get("cat");
-    if (catParam && catLabel[catParam]) setCat(catParam); else renderShop();
+    // Deep link from other pages: /mattress-shop-belfast/?cat=bunk#shop
+    setCat(params.get("cat") || "all");
   }
 
   /* ---------- Lead / reservation form ---------- */
@@ -303,6 +289,13 @@
         if (target) target.focus({ preventScroll: true });
       }, 500);
     });
+
+    // Deep link from a product card: /contact-us/?product=Sapphire%20Mattress#callback
+    var productParam = params.get("product");
+    if (productParam && el.message && el.message.tagName === "TEXTAREA") {
+      el.message.value = "I'm interested in the " + productParam + ".";
+      if (el.interest && el.interest.tagName === "SELECT") el.interest.value = guess(productParam);
+    }
 
     var rules = [
       [function () { return el.name; }, function (v) { return v.length > 1; }],
